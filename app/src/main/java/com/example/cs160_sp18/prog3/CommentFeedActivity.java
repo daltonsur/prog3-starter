@@ -1,5 +1,6 @@
 package com.example.cs160_sp18.prog3;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ public class CommentFeedActivity extends AppCompatActivity {
     RelativeLayout layout;
     Button sendButton;
     Toolbar mToolbar;
+    String username;
 
     /* TODO: right now mRecyclerView is using hard coded comments.
      * You'll need to add functionality for pulling and posting comments from Firebase
@@ -38,7 +40,14 @@ public class CommentFeedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment_feed);
 
         // TODO: replace this with the name of the landmark the user chose
+        Intent commentIntent = getIntent();
+        Bundle intentExtras = commentIntent.getExtras();
         String landmarkName = "test landmark";
+        if (intentExtras != null) {
+            landmarkName = (String) intentExtras.get("locationName");
+            username = (String) intentExtras.get("Username");
+        }
+
 
         // sets the app bar's title
         setTitle(landmarkName + ": Posts");
@@ -50,6 +59,7 @@ public class CommentFeedActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(mToolbar);
+        mToolbar.setTitle(landmarkName + ": Posts");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.comment_recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -106,7 +116,7 @@ public class CommentFeedActivity extends AppCompatActivity {
     }
 
     private void postNewComment(String commentText) {
-        Comment newComment = new Comment(commentText, "one-sixty student", new Date());
+        Comment newComment = new Comment(commentText, username, new Date());
         mComments.add(newComment);
         setAdapterAndUpdateData();
     }
